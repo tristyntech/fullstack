@@ -5,14 +5,48 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      todos: [["todo1", false], ["todo2", false]]
+      todos: []
     }
+
+    this.getTodosFromServer()
+  }
+
+  getTodosFromServer() {
+    // Study promises
+    // Study fetch / $.ajax requests
+    fetch('http://localhost:3001/todos')
+      .then((res) => {
+        return res.json()
+      })
+      .then((todos) => {
+        this.setState({ todos: todos })
+      })
+  }
+
+  postTodosFromServer(text) {
+    var config = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ text: text })
+    }
+
+    fetch('http://localhost:3001/todos', config)
+      .then((res) => {
+        return res.json()
+      })
+      .then((todos) => {
+        this.setState({ todos: todos })
+      })
   }
 
   onAddTodoClick() {
     var text = document.getElementById('todoInput').value
-    var newTodos = this.state.todos.concat([[text, false]])
-    this.setState({ todos: newTodos })
+    // var newTodos = this.state.todos.concat([[text, false]])
+
+    // Make request to the server to create a new todo
+    this.postTodosFromServer(text)
     document.getElementById('todoInput').value = ''
   }
 
